@@ -1,0 +1,3 @@
+﻿interface ServerState {
+    players: PlayerData[];
+}

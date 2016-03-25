@@ -1,0 +1,26 @@
+{
+  "name": "ServerMapCollisions",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "description": "ServerMapCollisions",
+  "author": {
+    "name": "ChaosCabbage",
+    "email": "puke_4@hotmail.com"
+  },
+  "dependencies": {
+    "body-parser": "~1.8.1",
+    "collision-map": "file:..\\collision-map",
+    "glass-room": "file:..\\glass-room",
+    "cookie-parser": "~1.3.3",
+    "debug": "~2.0.0",
+    "express": "~4.9.0",
+    "jade": "~1.6.0",
+    "morgan": "~1.3.0",
+    "serve-favicon": "~2.1.3",
+    "socket.io": "^1.4.5",
+    "stylus": "0.42.3"
+  }
+}

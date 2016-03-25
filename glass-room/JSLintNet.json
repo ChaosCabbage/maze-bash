@@ -1,0 +1,10 @@
+﻿{
+  "version": "2.2.1",
+  "ignore": [],
+  "options": {
+    "node": true,
+    "white": true
+  },
+  "globalVariables": [],
+  "runOnSave": true
+}

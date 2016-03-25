@@ -1,0 +1,12 @@
+﻿{
+  "version": "2.2.1",
+  "ignore": [
+    "\\test\\test.js"
+  ],
+  "options": {
+    "for": true,
+    "node": true
+  },
+  "globalVariables": [],
+  "runOnSave": true
+}

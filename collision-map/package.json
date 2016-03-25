@@ -1,0 +1,13 @@
+{
+  "name": "collision-map",
+  "version": "0.0.0",
+  "description": "collision-map",
+  "main": "app.js",
+  "author": {
+    "name": "ChaosCabbage",
+    "email": "puke_4@hotmail.com"
+  },
+  "devDependencies": {
+    "expect": "^1.15.2"
+  }
+}

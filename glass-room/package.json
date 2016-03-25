@@ -1,0 +1,13 @@
+{
+  "name": "glass-room",
+  "version": "0.0.0",
+  "description": "glass-room",
+  "main": "app.js",
+  "author": {
+    "name": "Paul",
+    "email": ""
+  },
+  "dependencies": {
+    "socket.io": "^1.4.5"
+  }
+}

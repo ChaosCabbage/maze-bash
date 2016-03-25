@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "collision-map", "collision-map\collision-map.njsproj", "{DA191263-6A1C-4625-A0C4-A7D04D7D77A8}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "glass-room", "glass-room\glass-room.njsproj", "{AD5909D8-3903-4277-8C49-8B4B8427F85C}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "MazeBashServer", "MazeBashServer\MazeBashServer.njsproj", "{3B7E4A9B-6DC1-433D-9576-0C00E4073485}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameClient", "MazeBashServer\GameClient\GameClient.csproj", "{60E123A3-654F-41A9-8FFA-DFCBE50B6E81}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DA191263-6A1C-4625-A0C4-A7D04D7D77A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA191263-6A1C-4625-A0C4-A7D04D7D77A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA191263-6A1C-4625-A0C4-A7D04D7D77A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA191263-6A1C-4625-A0C4-A7D04D7D77A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD5909D8-3903-4277-8C49-8B4B8427F85C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD5909D8-3903-4277-8C49-8B4B8427F85C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD5909D8-3903-4277-8C49-8B4B8427F85C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD5909D8-3903-4277-8C49-8B4B8427F85C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B7E4A9B-6DC1-433D-9576-0C00E4073485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B7E4A9B-6DC1-433D-9576-0C00E4073485}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B7E4A9B-6DC1-433D-9576-0C00E4073485}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B7E4A9B-6DC1-433D-9576-0C00E4073485}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60E123A3-654F-41A9-8FFA-DFCBE50B6E81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60E123A3-654F-41A9-8FFA-DFCBE50B6E81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60E123A3-654F-41A9-8FFA-DFCBE50B6E81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60E123A3-654F-41A9-8FFA-DFCBE50B6E81}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
