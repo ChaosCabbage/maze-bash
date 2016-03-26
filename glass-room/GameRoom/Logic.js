@@ -1,6 +1,7 @@
 var FakeRoomLogic = function () {
     
     var _currentState = function () { };
+    var _update = function () { };
 
     var _isAllowedToJoin = function (data) {
         return false;
@@ -17,7 +18,8 @@ var FakeRoomLogic = function () {
     };
 	
 	return {
-		currentState: _currentState
+        update: _update
+		, currentState: _currentState
 		, isAllowedToJoin: _isAllowedToJoin
 		, addPlayerToGame: _addPlayerToGame
         , removePlayerById: _removePlayerById
@@ -25,4 +27,4 @@ var FakeRoomLogic = function () {
 	};
 };
 
-module.exports = GameRoomLogic;
+module.exports = FakeRoomLogic;

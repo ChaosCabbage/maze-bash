@@ -32,11 +32,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="GameLogic.js" />
+    <Compile Include="Player.js" />
     <Compile Include="server.js" />
     <Compile Include="app.js" />
     <Compile Include="routes\index.js" />
     <Compile Include="routes\users.js" />
     <Compile Include="bin\www" />
+    <Compile Include="test\LogicTest.js">
+      <SubType>Code</SubType>
+      <TestFramework>Mocha</TestFramework>
+    </Compile>
     <Content Include="JSLintNet.json" />
     <Content Include="package.json" />
     <Content Include="public\stylesheets\style.styl" />
@@ -47,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />
+    <Folder Include="test\" />
     <Folder Include="public\" />
     <Folder Include="public\images\" />
     <Folder Include="public\javascripts\" />

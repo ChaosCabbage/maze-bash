@@ -1,7 +1,10 @@
 ﻿{
   "version": "2.2.1",
-  "ignore": [],
+  "ignore": [
+    "\\test\\"
+  ],
   "options": {
+    "es6": true,
     "node": true,
     "white": true
   },

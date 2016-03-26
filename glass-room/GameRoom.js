@@ -7,10 +7,8 @@ function GameRoom(io, room_name, logic) {
     var delay = 200;
     var looper = null;
 
-    var n = 0;
-
     var loop = function () {
-        ++n;
+        logic.update();
         room_io.broadcastGameState();
     };
 
