@@ -3,7 +3,7 @@
 var makePlayer = function (start_pos) {
     
     var position = { x: start_pos.x, y: start_pos.y };
-    var target = position;
+    var target = { x: start_pos.x, y: start_pos.y };
     
     var setTarget = function (new_pos) {
         target = new_pos;
@@ -20,10 +20,14 @@ var makePlayer = function (start_pos) {
         };
     };
     
-    var advance = function (distance) {
+    var advance = function (distance_to_move) {
         var vector = vectorToTarget();
-        var proportion = Math.max(1, distance / length(vector));
-        
+        var dist_remaining = length(vector);
+        if (dist_remaining == 0) {
+            return;
+        }
+
+        var proportion = Math.max(1, distance_to_move / dist_remaining);
         position.x += vector.x * proportion;
         position.y += vector.y * proportion;
     };

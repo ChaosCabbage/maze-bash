@@ -4,6 +4,5 @@
 }
 
 interface PlayerData {
-    pos: Point;
-    name: string;
+    position: Point;
 }

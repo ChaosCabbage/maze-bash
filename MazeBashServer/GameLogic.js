@@ -56,12 +56,11 @@ var GameLogic = function () {
     };
 
     var _addPlayerToGame = function (id, name, data) {
-        var new_player = makePlayer({ x: 0, y: 0 });
         if (data.colour === "red") {
-            red_player = new_player;
+            red_player = makePlayer({ x: 50, y: 50 });
             red_player.id = id;
         } else if (data.colour === "blue") {
-            blue_player = new_player;
+            blue_player = makePlayer({ x: 250, y: 250 });
             blue_player.id = id;
         } else {
             console.log("Unexpected colour");
@@ -69,12 +68,10 @@ var GameLogic = function () {
     };
 
     var _removePlayerById = function (id) {
-        if (red_player.id === id) {
+        if (red_player && red_player.id === id) {
             red_player = null;
-        } else if (blue_player.id === id) {
+        } else if (blue_player && blue_player.id === id) {
             blue_player = null;
-        } else {
-            console.log("Unknown player ID");
         }
     };
 

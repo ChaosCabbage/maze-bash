@@ -1,23 +1,28 @@
 ﻿class ServerStateDiff {
 
-    addedPlayers: PlayerData[];
-    removedPlayers: string[];
-
-    private nameList = (state: ServerState) => {
-        return state.players.map((p: PlayerData) => {
-            return p.name;
-        });
-    }
+    private _old: ServerState;
+    private _new: ServerState;
 
     constructor(oldState: ServerState, newState: ServerState) {
-        var oldNames = this.nameList(oldState);
-        var newNames = this.nameList(newState);
-
-        this.addedPlayers = newState.players.filter((p: PlayerData) => {
-            return oldNames.indexOf(p.name) == -1;
-        });
-        this.removedPlayers = oldNames.filter((name: string) => {
-            return newNames.indexOf(name) == -1;
-        });
+        this._old = oldState;
+        this._new = newState;
     }
+
+    blueAdded() {
+        return (this._old.players.blue == null) && (this._new.players.blue != null);
+    }
+
+    redAdded() {
+        return (this._old.players.red == null) && (this._new.players.red != null);
+    }
+
+    blueRemoved() {
+        return (this._old.players.blue != null) && (this._new.players.blue == null);
+    }
+
+    redRemoved() {
+        return (this._old.players.red != null) && (this._new.players.red == null);
+    }
+
+    
 }

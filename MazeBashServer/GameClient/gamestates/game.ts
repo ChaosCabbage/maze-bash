@@ -1,54 +1,66 @@
-﻿class PlayerNameMap {
-    [key: string]: PlayerData;
-}
-
-var toNameMap = (players: PlayerData[]): PlayerNameMap => {
-    var map = new PlayerNameMap;
-
-    players.forEach((p: PlayerData) => {
-        map[p.name] = p;
-    });
-
-    return map;
-}
-
-class GameState {
+﻿class GameState {
 
     private game: Phaser.Game;
     private socket: Socket;
     private yourName: string;
     private latestServerState: ServerState;
-
-    private playerEntities: any = {};
+    
+    private you: LocalPlayer;
+    private enemy: RemotePlayer;
 
     constructor(game: Phaser.Game) {
         this.game = game;
     }
 
-    init = (socket: Socket, yourName: string, data: ServerState) => {
+    init = (socket: Socket, yourColour: string, data: ServerState) => {
         this.socket = socket;
-        this.yourName = yourName;
         this.latestServerState = data;
+        this.you = null;
+        this.enemy = null;
+
+        if (yourColour === "red") {
+            this.processState = this.processRed;
+        } else if (yourColour === "blue") {
+            this.processState = this.processBlue;
+        } else {
+            this.processState = () => {
+                console.error("Wrong colour!");
+            };
+        }
     }
 
-    private addPlayerToGame = (name: string) => {
-        this.playerEntities[name] = new PlayerEntity(this.game);
-    }
+    private processState: (ServerState) => void;
 
-    private processServerUpdate = (newState: ServerState) => {
+    private processRed(newState: ServerState) {
         var diff = new ServerStateDiff(this.latestServerState, newState);
-        diff.removedPlayers.forEach((name: string) => {
-            this.playerEntities[name].removeFromGame();
-            delete this.playerEntities[name];
-        });
-        diff.addedPlayers.forEach((player: PlayerData) => {
-            this.addPlayerToGame(player.name);
-        });
-        newState.players.forEach((player: PlayerData) => {
-            var entity: PlayerEntity = this.playerEntities[player.name];
-            entity
-        });
+        if (diff.blueRemoved()) {
+            this.enemy = null;
+        }
+        if (!this.enemy && newState.players.blue) {
+            this.enemy = new RemotePlayer(this.game);
+        }
+        if (this.enemy) {
+            this.enemy.reconcile(newState.players.blue);
+        }
+        this.you.reconcile(newState.players.red);
+    }
 
+    private processBlue(newState: ServerState) {
+        var diff = new ServerStateDiff(this.latestServerState, newState);
+        if (diff.redRemoved()) {
+            this.enemy = null;
+        }
+        if (!this.enemy && newState.players.red) {
+            this.enemy = new RemotePlayer(this.game);
+        }
+        if (this.enemy) {
+            this.enemy.reconcile(newState.players.red);
+        }
+        this.you.reconcile(newState.players.blue);
+    }
+
+    private processServerUpdate(newState: ServerState) {
+        this.processState(newState);
         this.latestServerState = newState;
     }
 
@@ -66,27 +78,17 @@ class GameState {
         //  This resizes the game world to match the layer dimensions
         floor.resizeWorld();
 
-        var x = Math.random() * 500;
-        var y = Math.random() * 500;
-
-        var you = new PlayerEntity(this.game);
-        you.reconcile({
-            pos: { x: x, y: y },
-            name: this.yourName
-        });
-        this.playerEntities[this.yourName] = you;
+        this.you = new LocalPlayer(this.game);
 
         this.socket.on("game update", (data: ServerState) => {
-            if (!data || !data.players) {
-                return;
-            }
-            this.processServerUpdate(data);
+            this.processServerUpdate(new ValidatedServerState(data));
         });
     }
     
     update = () => {
-        for (var name in this.playerEntities) {
-            this.playerEntities[name].update();
+        this.you.update();
+        if (this.enemy) {
+            this.enemy.update();
         }
     }
     

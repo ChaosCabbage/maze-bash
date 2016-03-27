@@ -74,7 +74,8 @@
     <TypeScriptCompile Include="phaser.d.ts" />
     <TypeScriptCompile Include="pixi.d.ts" />
     <TypeScriptCompile Include="glassengine\PlayerData.ts" />
-    <TypeScriptCompile Include="PlayerEntity.ts" />
+    <TypeScriptCompile Include="LocalPlayer.ts" />
+    <TypeScriptCompile Include="RemotePlayer.ts" />
     <TypeScriptCompile Include="ServerStateDiff.ts" />
     <TypeScriptCompile Include="socketio.d.ts" />
   </ItemGroup>

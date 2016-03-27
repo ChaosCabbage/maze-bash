@@ -12,19 +12,24 @@
     init = (socket: Socket, yourName: string, data: ServerState) => {
         this.socket = socket;
         this.you = yourName;
-        this.state = data;
+        this.state = new ValidatedServerState(data);
     }
 
     create = () => {        
         console.log("Entering Lobby state");
 
-        this.socket.emit("join game", { job: "Gimp" });
+        var colourToJoinAs = "red";
+        if (this.state.players.red != null) {
+            colourToJoinAs = "blue";
+        }
+
+        this.socket.emit("join game", { colour: colourToJoinAs });
 
         this.socket.on("failed to join", function () {
             alert("Sad face");
         });
 
-        this.game.state.start("TheGame", true, false, this.socket, this.you, this.state);
+        this.game.state.start("TheGame", true, false, this.socket, colourToJoinAs, this.state);
     }
 
 }

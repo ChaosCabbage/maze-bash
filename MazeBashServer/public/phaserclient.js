@@ -33,44 +33,25 @@ var BootState = (function () {
     }
     return BootState;
 })();
-var PlayerNameMap = (function () {
-    function PlayerNameMap() {
-    }
-    return PlayerNameMap;
-})();
-var toNameMap = function (players) {
-    var map = new PlayerNameMap;
-    players.forEach(function (p) {
-        map[p.name] = p;
-    });
-    return map;
-};
 var GameState = (function () {
     function GameState(game) {
         var _this = this;
-        this.playerEntities = {};
-        this.init = function (socket, yourName, data) {
+        this.init = function (socket, yourColour, data) {
             _this.socket = socket;
-            _this.yourName = yourName;
             _this.latestServerState = data;
-        };
-        this.addPlayerToGame = function (name) {
-            _this.playerEntities[name] = new PlayerEntity(_this.game);
-        };
-        this.processServerUpdate = function (newState) {
-            var diff = new ServerStateDiff(_this.latestServerState, newState);
-            diff.removedPlayers.forEach(function (name) {
-                _this.playerEntities[name].removeFromGame();
-                delete _this.playerEntities[name];
-            });
-            diff.addedPlayers.forEach(function (player) {
-                _this.addPlayerToGame(player.name);
-            });
-            newState.players.forEach(function (player) {
-                var entity = _this.playerEntities[player.name];
-                entity;
-            });
-            _this.latestServerState = newState;
+            _this.you = null;
+            _this.enemy = null;
+            if (yourColour === "red") {
+                _this.processState = _this.processRed;
+            }
+            else if (yourColour === "blue") {
+                _this.processState = _this.processBlue;
+            }
+            else {
+                _this.processState = function () {
+                    console.error("Wrong colour!");
+                };
+            }
         };
         this.create = function () {
             console.log("Entering main game state");
@@ -80,30 +61,51 @@ var GameState = (function () {
             var floor = map.createLayer('Tile Layer 1');
             var walls = map.createLayer('Walls');
             floor.resizeWorld();
-            var x = Math.random() * 500;
-            var y = Math.random() * 500;
-            var you = new PlayerEntity(_this.game);
-            you.reconcile({
-                pos: { x: x, y: y },
-                name: _this.yourName
-            });
-            _this.playerEntities[_this.yourName] = you;
+            _this.you = new LocalPlayer(_this.game);
             _this.socket.on("game update", function (data) {
-                if (!data || !data.players) {
-                    return;
-                }
-                _this.processServerUpdate(data);
+                _this.processServerUpdate(new ValidatedServerState(data));
             });
         };
         this.update = function () {
-            for (var name in _this.playerEntities) {
-                _this.playerEntities[name].update();
+            _this.you.update();
+            if (_this.enemy) {
+                _this.enemy.update();
             }
         };
         this.render = function () {
         };
         this.game = game;
     }
+    GameState.prototype.processRed = function (newState) {
+        var diff = new ServerStateDiff(this.latestServerState, newState);
+        if (diff.blueRemoved()) {
+            this.enemy = null;
+        }
+        if (!this.enemy && newState.players.blue) {
+            this.enemy = new RemotePlayer(this.game);
+        }
+        if (this.enemy) {
+            this.enemy.reconcile(newState.players.blue);
+        }
+        this.you.reconcile(newState.players.red);
+    };
+    GameState.prototype.processBlue = function (newState) {
+        var diff = new ServerStateDiff(this.latestServerState, newState);
+        if (diff.redRemoved()) {
+            this.enemy = null;
+        }
+        if (!this.enemy && newState.players.red) {
+            this.enemy = new RemotePlayer(this.game);
+        }
+        if (this.enemy) {
+            this.enemy.reconcile(newState.players.red);
+        }
+        this.you.reconcile(newState.players.blue);
+    };
+    GameState.prototype.processServerUpdate = function (newState) {
+        this.processState(newState);
+        this.latestServerState = newState;
+    };
     return GameState;
 })();
 var LobbyState = (function () {
@@ -112,15 +114,19 @@ var LobbyState = (function () {
         this.init = function (socket, yourName, data) {
             _this.socket = socket;
             _this.you = yourName;
-            _this.state = data;
+            _this.state = new ValidatedServerState(data);
         };
         this.create = function () {
             console.log("Entering Lobby state");
-            _this.socket.emit("join game", { job: "Gimp" });
+            var colourToJoinAs = "red";
+            if (_this.state.players.red != null) {
+                colourToJoinAs = "blue";
+            }
+            _this.socket.emit("join game", { colour: colourToJoinAs });
             _this.socket.on("failed to join", function () {
                 alert("Sad face");
             });
-            _this.game.state.start("TheGame", true, false, _this.socket, _this.you, _this.state);
+            _this.game.state.start("TheGame", true, false, _this.socket, colourToJoinAs, _this.state);
         };
         this.game = game;
     }
@@ -244,22 +250,22 @@ var Emitter = (function () {
     };
     return Emitter;
 })();
-var PlayerEntity = (function () {
-    function PlayerEntity(game) {
-        var _this = this;
+var ValidatedServerState = (function () {
+    function ValidatedServerState(serverData) {
+        this.players = {
+            red: null,
+            blue: null
+        };
+        if (serverData.players && ("red" in serverData.players) && ("blue" in serverData.players)) {
+            this.players.red = serverData.players.red;
+            this.players.blue = serverData.players.blue;
+        }
+    }
+    return ValidatedServerState;
+})();
+var LocalPlayer = (function () {
+    function LocalPlayer(game) {
         this.waitingUpdate = null;
-        this.update = function () {
-            if (_this.waitingUpdate != null) {
-                _this.sprite.body.position.setTo(_this.waitingUpdate.x, _this.waitingUpdate.y);
-                _this.waitingUpdate = null;
-            }
-        };
-        this.reconcile = function (data) {
-            _this.waitingUpdate = data.pos;
-        };
-        this.removeFromGame = function () {
-            _this.sprite.destroy();
-        };
         this.sprite = game.add.sprite(100, 100, "player", 1);
         this.sprite.animations.add("left", [8, 9], 10, true);
         this.sprite.animations.add("right", [1, 2], 10, true);
@@ -269,23 +275,62 @@ var PlayerEntity = (function () {
         this.sprite.body.setSize(10, 14, 2, 1);
         this.sprite.play("left");
     }
-    return PlayerEntity;
+    LocalPlayer.prototype.update = function () {
+        if (this.waitingUpdate != null) {
+            this.sprite.body.position.setTo(this.waitingUpdate.x, this.waitingUpdate.y);
+            this.waitingUpdate = null;
+        }
+    };
+    LocalPlayer.prototype.reconcile = function (data) {
+        this.waitingUpdate = data.position;
+    };
+    LocalPlayer.prototype.removeFromGame = function () {
+        this.sprite.destroy();
+    };
+    return LocalPlayer;
+})();
+var RemotePlayer = (function () {
+    function RemotePlayer(game) {
+        this.waitingUpdate = null;
+        this.sprite = game.add.sprite(100, 100, "player", 1);
+        this.sprite.animations.add("left", [8, 9], 10, true);
+        this.sprite.animations.add("right", [1, 2], 10, true);
+        this.sprite.animations.add("up", [11, 12, 13], 10, true);
+        this.sprite.animations.add("down", [4, 5, 6], 10, true);
+        game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
+        this.sprite.body.setSize(10, 14, 2, 1);
+        this.sprite.play("left");
+    }
+    RemotePlayer.prototype.update = function () {
+        if (this.waitingUpdate != null) {
+            this.sprite.body.position.setTo(this.waitingUpdate.x, this.waitingUpdate.y);
+            this.waitingUpdate = null;
+        }
+    };
+    RemotePlayer.prototype.reconcile = function (data) {
+        this.waitingUpdate = data.position;
+    };
+    RemotePlayer.prototype.removeFromGame = function () {
+        this.sprite.destroy();
+    };
+    return RemotePlayer;
 })();
 var ServerStateDiff = (function () {
     function ServerStateDiff(oldState, newState) {
-        this.nameList = function (state) {
-            return state.players.map(function (p) {
-                return p.name;
-            });
-        };
-        var oldNames = this.nameList(oldState);
-        var newNames = this.nameList(newState);
-        this.addedPlayers = newState.players.filter(function (p) {
-            return oldNames.indexOf(p.name) == -1;
-        });
-        this.removedPlayers = oldNames.filter(function (name) {
-            return newNames.indexOf(name) == -1;
-        });
+        this._old = oldState;
+        this._new = newState;
     }
+    ServerStateDiff.prototype.blueAdded = function () {
+        return (this._old.players.blue == null) && (this._new.players.blue != null);
+    };
+    ServerStateDiff.prototype.redAdded = function () {
+        return (this._old.players.red == null) && (this._new.players.red != null);
+    };
+    ServerStateDiff.prototype.blueRemoved = function () {
+        return (this._old.players.blue != null) && (this._new.players.blue == null);
+    };
+    ServerStateDiff.prototype.redRemoved = function () {
+        return (this._old.players.red != null) && (this._new.players.red == null);
+    };
     return ServerStateDiff;
 })();
