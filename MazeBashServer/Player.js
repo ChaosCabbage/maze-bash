@@ -15,8 +15,8 @@ var makePlayer = function (start_pos) {
     
     var vectorToTarget = function () {
         return {
-            x: position.x - target.x,
-            y: position.y - target.y
+            x: target.x - position.x,
+            y: target.y - position.y
         };
     };
     
@@ -26,8 +26,9 @@ var makePlayer = function (start_pos) {
         if (dist_remaining == 0) {
             return;
         }
-
-        var proportion = Math.max(1, distance_to_move / dist_remaining);
+        
+        var d = Math.max(dist_remaining, distance_to_move);
+        var proportion = d / dist_remaining
         position.x += vector.x * proportion;
         position.y += vector.y * proportion;
     };

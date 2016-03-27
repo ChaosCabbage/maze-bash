@@ -67,16 +67,16 @@
     create = () => {
         console.log("Entering main game state");
 
-        this.game.stage.backgroundColor = '#437698';
+        this.game.stage.backgroundColor = '#435261';
         
-        var map = this.game.add.tilemap('cave');
-        map.addTilesetImage('cave', 'cavetiles');
+       // var map = this.game.add.tilemap('cave');
+      //  map.addTilesetImage('cave', 'cavetiles');
     
-        var floor = map.createLayer('Tile Layer 1');
-        var walls = map.createLayer('Walls');
+      //  var floor = map.createLayer('Tile Layer 1');
+      //  var walls = map.createLayer('Walls');
 
         //  This resizes the game world to match the layer dimensions
-        floor.resizeWorld();
+     //   floor.resizeWorld();
 
         this.you = new LocalPlayer(this.game);
 
@@ -90,6 +90,8 @@
         if (this.enemy) {
             this.enemy.update();
         }
+
+        this.socket.emit("try update", this.you.data());
     }
     
     render = () => {

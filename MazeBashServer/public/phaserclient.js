@@ -55,12 +55,7 @@ var GameState = (function () {
         };
         this.create = function () {
             console.log("Entering main game state");
-            _this.game.stage.backgroundColor = '#437698';
-            var map = _this.game.add.tilemap('cave');
-            map.addTilesetImage('cave', 'cavetiles');
-            var floor = map.createLayer('Tile Layer 1');
-            var walls = map.createLayer('Walls');
-            floor.resizeWorld();
+            _this.game.stage.backgroundColor = '#435261';
             _this.you = new LocalPlayer(_this.game);
             _this.socket.on("game update", function (data) {
                 _this.processServerUpdate(new ValidatedServerState(data));
@@ -71,6 +66,7 @@ var GameState = (function () {
             if (_this.enemy) {
                 _this.enemy.update();
             }
+            _this.socket.emit("try update", _this.you.data());
         };
         this.render = function () {
         };
@@ -266,6 +262,7 @@ var ValidatedServerState = (function () {
 var LocalPlayer = (function () {
     function LocalPlayer(game) {
         this.waitingUpdate = null;
+        this.game = game;
         this.sprite = game.add.sprite(100, 100, "player", 1);
         this.sprite.animations.add("left", [8, 9], 10, true);
         this.sprite.animations.add("right", [1, 2], 10, true);
@@ -280,9 +277,26 @@ var LocalPlayer = (function () {
             this.sprite.body.position.setTo(this.waitingUpdate.x, this.waitingUpdate.y);
             this.waitingUpdate = null;
         }
+        if (this.game.input.mousePointer.isDown) {
+            this.game.physics.arcade.moveToPointer(this.sprite, 100);
+            if (Phaser.Rectangle.contains(this.sprite.body, this.game.input.x, this.game.input.y)) {
+                this.sprite.body.velocity.setTo(0, 0);
+            }
+        }
+        else {
+            this.sprite.body.velocity.setTo(0, 0);
+        }
     };
     LocalPlayer.prototype.reconcile = function (data) {
         this.waitingUpdate = data.position;
+    };
+    LocalPlayer.prototype.data = function () {
+        return {
+            position: {
+                x: this.sprite.body.x,
+                y: this.sprite.body.y
+            }
+        };
     };
     LocalPlayer.prototype.removeFromGame = function () {
         this.sprite.destroy();
