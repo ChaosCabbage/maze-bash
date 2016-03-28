@@ -13,6 +13,7 @@
         this.game.load.setPreloadSprite(loadingBar);
 
         this.game.load.spritesheet("player", "assets/sprites/spaceman.png", 16, 16);
+        this.game.load.spritesheet("red", "assets/sprites/red.png", 32, 32);
         this.game.load.tilemap("cave", "assets/tilemap/caveMap.json", null, Phaser.Tilemap.TILED_JSON);
         this.game.load.image("cavetiles", "assets/tilemap/cave.png");
     }

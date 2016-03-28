@@ -221,6 +221,7 @@ var PreloadState = (function () {
             loadingBar.anchor.setTo(0.5, 0.5);
             _this.game.load.setPreloadSprite(loadingBar);
             _this.game.load.spritesheet("player", "assets/sprites/spaceman.png", 16, 16);
+            _this.game.load.spritesheet("red", "assets/sprites/red.png", 32, 32);
             _this.game.load.tilemap("cave", "assets/tilemap/caveMap.json", null, Phaser.Tilemap.TILED_JSON);
             _this.game.load.image("cavetiles", "assets/tilemap/cave.png");
         };
@@ -232,6 +233,28 @@ var PreloadState = (function () {
         this.game = game;
     }
     return PreloadState;
+})();
+var Sprites = (function () {
+    function Sprites() {
+    }
+    Sprites.spaceman = function (game) {
+        var sprite = game.add.sprite(100, 100, "player", 1);
+        sprite.animations.add("left", [8, 9], 10, true);
+        sprite.animations.add("right", [1, 2], 10, true);
+        sprite.animations.add("up", [11, 12, 13], 10, true);
+        sprite.animations.add("down", [4, 5, 6], 10, true);
+        game.physics.enable(sprite, Phaser.Physics.ARCADE);
+        sprite.body.setSize(10, 14, 2, 1);
+        return sprite;
+    };
+    Sprites.red = function (game) {
+        var sprite = game.add.sprite(-100, -100, "red", 1);
+        sprite.animations.add("right", [0, 1, 2, 3], 10, true);
+        game.physics.enable(sprite, Phaser.Physics.ARCADE);
+        sprite.body.setSize(27, 30, 5, 2);
+        return sprite;
+    };
+    return Sprites;
 })();
 var Emitter = (function () {
     function Emitter(socket, player) {
@@ -263,14 +286,8 @@ var LocalPlayer = (function () {
     function LocalPlayer(game) {
         this.waitingUpdate = null;
         this.game = game;
-        this.sprite = game.add.sprite(100, 100, "player", 1);
-        this.sprite.animations.add("left", [8, 9], 10, true);
-        this.sprite.animations.add("right", [1, 2], 10, true);
-        this.sprite.animations.add("up", [11, 12, 13], 10, true);
-        this.sprite.animations.add("down", [4, 5, 6], 10, true);
-        game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
-        this.sprite.body.setSize(10, 14, 2, 1);
-        this.sprite.play("left");
+        this.sprite = Sprites.red(game);
+        this.sprite.play("right");
     }
     LocalPlayer.prototype.update = function () {
         if (this.waitingUpdate != null) {
