@@ -69,14 +69,14 @@
 
         this.game.stage.backgroundColor = '#435261';
         
-       // var map = this.game.add.tilemap('cave');
-      //  map.addTilesetImage('cave', 'cavetiles');
+        var map = this.game.add.tilemap('maze');
+        map.addTilesetImage('Maze','mazetiles');
     
-      //  var floor = map.createLayer('Tile Layer 1');
-      //  var walls = map.createLayer('Walls');
+        var floor = map.createLayer('Maze');
+        //map.setCollisionBetween(0, 1);
 
-        //  This resizes the game world to match the layer dimensions
-     //   floor.resizeWorld();
+        //This resizes the game world to match the layer dimensions
+        floor.resizeWorld();
 
         this.you = new LocalPlayer(this.game);
 

@@ -14,8 +14,8 @@
 
         this.game.load.spritesheet("player", "assets/sprites/spaceman.png", 16, 16);
         this.game.load.spritesheet("red", "assets/sprites/red.png", 32, 32);
-        this.game.load.tilemap("cave", "assets/tilemap/caveMap.json", null, Phaser.Tilemap.TILED_JSON);
-        this.game.load.image("cavetiles", "assets/tilemap/cave.png");
+        this.game.load.tilemap("maze", "assets/tilemap/maze.json", null, Phaser.Tilemap.TILED_JSON);
+        this.game.load.image("mazetiles", "assets/tilemap/maze.png");
     }
 
     create = () => {

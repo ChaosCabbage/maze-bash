@@ -56,6 +56,10 @@ var GameState = (function () {
         this.create = function () {
             console.log("Entering main game state");
             _this.game.stage.backgroundColor = '#435261';
+            var map = _this.game.add.tilemap('maze');
+            map.addTilesetImage('Maze', 'mazetiles');
+            var floor = map.createLayer('Maze');
+            floor.resizeWorld();
             _this.you = new LocalPlayer(_this.game);
             _this.socket.on("game update", function (data) {
                 _this.processServerUpdate(new ValidatedServerState(data));
@@ -222,8 +226,8 @@ var PreloadState = (function () {
             _this.game.load.setPreloadSprite(loadingBar);
             _this.game.load.spritesheet("player", "assets/sprites/spaceman.png", 16, 16);
             _this.game.load.spritesheet("red", "assets/sprites/red.png", 32, 32);
-            _this.game.load.tilemap("cave", "assets/tilemap/caveMap.json", null, Phaser.Tilemap.TILED_JSON);
-            _this.game.load.image("cavetiles", "assets/tilemap/cave.png");
+            _this.game.load.tilemap("maze", "assets/tilemap/maze.json", null, Phaser.Tilemap.TILED_JSON);
+            _this.game.load.image("mazetiles", "assets/tilemap/maze.png");
         };
         this.create = function () {
             var address = Debug.SERVER_ADDRESS || "";
@@ -233,28 +237,6 @@ var PreloadState = (function () {
         this.game = game;
     }
     return PreloadState;
-})();
-var Sprites = (function () {
-    function Sprites() {
-    }
-    Sprites.spaceman = function (game) {
-        var sprite = game.add.sprite(100, 100, "player", 1);
-        sprite.animations.add("left", [8, 9], 10, true);
-        sprite.animations.add("right", [1, 2], 10, true);
-        sprite.animations.add("up", [11, 12, 13], 10, true);
-        sprite.animations.add("down", [4, 5, 6], 10, true);
-        game.physics.enable(sprite, Phaser.Physics.ARCADE);
-        sprite.body.setSize(10, 14, 2, 1);
-        return sprite;
-    };
-    Sprites.red = function (game) {
-        var sprite = game.add.sprite(-100, -100, "red", 1);
-        sprite.animations.add("right", [0, 1, 2, 3], 10, true);
-        game.physics.enable(sprite, Phaser.Physics.ARCADE);
-        sprite.body.setSize(27, 30, 5, 2);
-        return sprite;
-    };
-    return Sprites;
 })();
 var Emitter = (function () {
     function Emitter(socket, player) {
@@ -364,4 +346,26 @@ var ServerStateDiff = (function () {
         return (this._old.players.red != null) && (this._new.players.red == null);
     };
     return ServerStateDiff;
+})();
+var Sprites = (function () {
+    function Sprites() {
+    }
+    Sprites.spaceman = function (game) {
+        var sprite = game.add.sprite(100, 100, "player", 1);
+        sprite.animations.add("left", [8, 9], 10, true);
+        sprite.animations.add("right", [1, 2], 10, true);
+        sprite.animations.add("up", [11, 12, 13], 10, true);
+        sprite.animations.add("down", [4, 5, 6], 10, true);
+        game.physics.enable(sprite, Phaser.Physics.ARCADE);
+        sprite.body.setSize(10, 14, 2, 1);
+        return sprite;
+    };
+    Sprites.red = function (game) {
+        var sprite = game.add.sprite(-100, -100, "red", 1);
+        sprite.animations.add("right", [0, 1, 2, 3], 10, true);
+        game.physics.enable(sprite, Phaser.Physics.ARCADE);
+        sprite.body.setSize(27, 30, 5, 2);
+        return sprite;
+    };
+    return Sprites;
 })();

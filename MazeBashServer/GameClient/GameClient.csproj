@@ -68,7 +68,7 @@
     <TypeScriptCompile Include="gamestates\lobby.ts" />
     <TypeScriptCompile Include="gamestates\nameinput.ts" />
     <TypeScriptCompile Include="gamestates\preload.ts" />
-    <TypeScriptCompile Include="gamestates\Sprites.ts" />
+    <TypeScriptCompile Include="Sprites.ts" />
     <TypeScriptCompile Include="glassengine\Emitter.ts" />
     <TypeScriptCompile Include="glassengine\ServerState.ts" />
     <TypeScriptCompile Include="p2.d.ts" />

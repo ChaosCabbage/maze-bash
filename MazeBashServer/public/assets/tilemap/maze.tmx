@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="30" tilewidth="32" tileheight="32" nextobjectid="5">
+ <tileset firstgid="1" name="Maze" tilewidth="32" tileheight="32">
+  <image source="maze.png" width="64" height="32"/>
+ </tileset>
+ <layer name="Maze" width="40" height="30">
+  <data encoding="base64" compression="zlib">
+   eJzNlEkOhDAQAwP/f/RcUdS2y2EOHBAoq9td5lprXR9/bvOk+eea/Z3O2cem/c+xSfc0n7Tc257p/BN9yb9U166J+u36oM5X99EeEp+SV1Ot9CzFRLqP+qb4ONFJ+uhYpPooB6f/BOU/6a/TSb9p7xOnjT6ak+Sd4r3hz2WHZJFkprnDZY7U2/jSsOL2pTHno+uxq5v20DFBWUo5eZMPmhe1j3p44l/iPnmZdPzDv+RHyg75dyStTgu5g/TdnevqdPpI3whLZL26g9RC/EjepLwSxggHxEfHGGHwVDvhwfFBMrivJ/w1fiq9xD+ljdRB8kl0q291XtpL/Ws5fbOu0dXk1nFK8570UY8JI03O1RzJIvWDcJg0Oy2EFzrfrps8++rzA15GBxA=
+  </data>
+ </layer>
+ <objectgroup name="Starts">
+  <object id="3" name="Red" type="Spawn" x="216" y="884"/>
+  <object id="4" name="Blue" type="Spawn" x="1065" y="80"/>
+ </objectgroup>
+</map>
