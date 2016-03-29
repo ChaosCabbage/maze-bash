@@ -56,11 +56,13 @@ var GameState = (function () {
         this.create = function () {
             console.log("Entering main game state");
             _this.game.stage.backgroundColor = '#435261';
+            _this.game.physics.startSystem(Phaser.Physics.ARCADE);
             var map = _this.game.add.tilemap('maze');
             map.addTilesetImage('Maze', 'mazetiles');
+            map.setCollision(1);
             var floor = map.createLayer('Maze');
             floor.resizeWorld();
-            _this.you = new LocalPlayer(_this.game);
+            _this.you = new LocalPlayer(_this.game, floor);
             _this.socket.on("game update", function (data) {
                 _this.processServerUpdate(new ValidatedServerState(data));
             });
@@ -265,17 +267,20 @@ var ValidatedServerState = (function () {
     return ValidatedServerState;
 })();
 var LocalPlayer = (function () {
-    function LocalPlayer(game) {
+    function LocalPlayer(game, map) {
         this.waitingUpdate = null;
         this.game = game;
+        this.map = map;
         this.sprite = Sprites.red(game);
         this.sprite.play("right");
+        game.camera.follow(this.sprite);
     }
     LocalPlayer.prototype.update = function () {
         if (this.waitingUpdate != null) {
             this.sprite.body.position.setTo(this.waitingUpdate.x, this.waitingUpdate.y);
             this.waitingUpdate = null;
         }
+        this.game.physics.arcade.collide(this.sprite, this.map);
         if (this.game.input.mousePointer.isDown) {
             this.game.physics.arcade.moveToPointer(this.sprite, 100);
             if (Phaser.Rectangle.contains(this.sprite.body, this.game.input.x, this.game.input.y)) {
@@ -364,7 +369,7 @@ var Sprites = (function () {
         var sprite = game.add.sprite(-100, -100, "red", 1);
         sprite.animations.add("right", [0, 1, 2, 3], 10, true);
         game.physics.enable(sprite, Phaser.Physics.ARCADE);
-        sprite.body.setSize(27, 30, 5, 2);
+        sprite.body.setSize(20, 32, 5, 16);
         return sprite;
     };
     return Sprites;

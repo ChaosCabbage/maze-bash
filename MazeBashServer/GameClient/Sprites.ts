@@ -16,7 +16,7 @@
         var sprite = game.add.sprite(-100, -100, "red", 1);
         sprite.animations.add("right", [0, 1, 2, 3], 10, true);
         game.physics.enable(sprite, Phaser.Physics.ARCADE);
-        sprite.body.setSize(27, 30, 5, 2);
+        sprite.body.setSize(20, 32, 5, 16);
         return sprite;
     }
 

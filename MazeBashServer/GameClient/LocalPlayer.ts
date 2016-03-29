@@ -2,13 +2,17 @@
 
     private sprite: Phaser.Sprite;
     private waitingUpdate: Point = null;
+    private map: Phaser.TilemapLayer;
 
     private game: Phaser.Game;
 
-    constructor(game: Phaser.Game) {
+    constructor(game: Phaser.Game, map: Phaser.TilemapLayer) {
         this.game = game;
+        this.map = map;
+
         this.sprite = Sprites.red(game);
         this.sprite.play("right");
+        game.camera.follow(this.sprite);
     } 
 
     update() {
@@ -17,6 +21,7 @@
             this.waitingUpdate = null;
         }
 
+        this.game.physics.arcade.collide(this.sprite, this.map);
 
         //  only move when you click
         if (this.game.input.mousePointer.isDown) {

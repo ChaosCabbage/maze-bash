@@ -68,17 +68,18 @@
         console.log("Entering main game state");
 
         this.game.stage.backgroundColor = '#435261';
+
+        this.game.physics.startSystem(Phaser.Physics.ARCADE);
         
         var map = this.game.add.tilemap('maze');
-        map.addTilesetImage('Maze','mazetiles');
-    
+        map.addTilesetImage('Maze', 'mazetiles');
+        map.setCollision(1);    
         var floor = map.createLayer('Maze');
-        //map.setCollisionBetween(0, 1);
 
         //This resizes the game world to match the layer dimensions
         floor.resizeWorld();
 
-        this.you = new LocalPlayer(this.game);
+        this.you = new LocalPlayer(this.game, floor);
 
         this.socket.on("game update", (data: ServerState) => {
             this.processServerUpdate(new ValidatedServerState(data));
